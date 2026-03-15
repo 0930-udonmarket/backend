@@ -28,4 +28,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByProviderAndProviderId(
             @Param("provider")   String provider,
             @Param("providerId") String providerId);
+
+    /** 마이페이지 유저 정보 출력용 */
+    @Query("SELECT u FROM User u WHERE u.id = :id")
+    User myPageUserInfo(@io.lettuce.core.dynamic.annotation.Param("id") Long id);
+
 }

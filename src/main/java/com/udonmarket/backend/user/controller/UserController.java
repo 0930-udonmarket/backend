@@ -2,6 +2,7 @@ package com.udonmarket.backend.user.controller;
 
 import com.udonmarket.backend.user.dto.request.*;
 import com.udonmarket.backend.user.dto.response.*;
+import com.udonmarket.backend.user.entity.User;
 import com.udonmarket.backend.user.service.SmsVerificationService;
 import com.udonmarket.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -112,5 +113,13 @@ public class UserController {
     public ResponseEntity<Map<String, String>> resetPassword(@RequestBody ResetPasswordRequest req) {
         userService.resetPassword(req);
         return ResponseEntity.ok(Map.of("message", "비밀번호가 재설정되었습니다."));
+    }
+
+    /** 마이페이지 유저 정보 - GET /api/users/mypage1 */
+    @GetMapping("/mypage/{id}")
+    public User getUserInfo(@PathVariable("id") Long id) {
+        User user = userService.myPageUserInfo(id);
+
+        return user;
     }
 }

@@ -140,4 +140,9 @@ public class UserService {
             default        -> User.Gender.N;
         };
     }
+
+    // 마이페이지에 출력할 유저 정보
+    public User myPageUserInfo(Long id) {
+        return userRepository.myPageUserInfo(id);
+    }
 }
