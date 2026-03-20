@@ -1,5 +1,6 @@
 package com.udonmarket.backend.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.udonmarket.backend.product.entity.Product;
 import com.udonmarket.backend.user.entity.User;
 import jakarta.persistence.*;
@@ -22,6 +23,7 @@ public class Post {
     // 판매자 정보
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     private String title;
