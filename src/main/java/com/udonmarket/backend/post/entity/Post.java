@@ -2,63 +2,85 @@ package com.udonmarket.backend.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.udonmarket.backend.product.entity.Product;
-import com.udonmarket.backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "post")
 @Getter
 @Setter
-
-@Entity
-@Builder
+@NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(org.springframework.data.jpa.domain.support.AuditingEntityListener.class)
+@Builder
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 판매자 정보
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
+    @Column(name = "category_id")
     private Long categoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Product 정보를 JSON으로 바꿀 때 에러가 나지 않도록
     private Product product;
 
+    @Column(name = "title", nullable = false)
     private String title;
-    private String content;
-    private Long targetCount; // 모집 인원
-    private Long currentCount; // 현재 모집 인원
-    private Long viewCount; // 조회수
-    private LocalDateTime deadline;
-    private String status;
-    private String adminComment;
-    private String categoryCode;
-    private String tags;
-    private Long pricePerPerson; // 1인당 부담금
 
-    @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
+    // 목표 인원
+    @Column(name = "target_count")
+    private Integer targetCount;
+
+    // 현재 참여 인원
+    @Column(name = "current_count")
+    private Integer currentCount;
+
+    @Column(name = "view_count")
+    private Integer viewCount;
+
+    @Column(name = "deadline")
+    private LocalDateTime deadline;
+
+    // active, closed, cancelled
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "admin_comment")
+    private String adminComment;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "category_code")
+    private String categoryCode;
+
+    @Column(name = "tags")
+    private String tags;
+
+    // 1인당 가격
+    @Column(name = "price_per_person")
+    private Long pricePerPerson;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        if (this.status == null) this.status = "active";
+        if (this.currentCount == null) this.currentCount = 0;
+        if (this.viewCount == null) this.viewCount = 0;
     }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -72,4 +94,20 @@ public class Post {
         image.setPost(this);
     }
 
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void incrementViewCount() {
+        this.viewCount = (this.viewCount == null ? 0 : this.viewCount) + 1;
+    }
+
+    public void incrementCurrentCount() {
+        this.currentCount = (this.currentCount == null ? 0 : this.currentCount) + 1;
+    }
+
+    public void close() {
+        this.status = "closed";
+    }
 }

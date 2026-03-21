@@ -1,35 +1,40 @@
 package com.udonmarket.backend.post.dto;
 
-import com.udonmarket.backend.product.entity.Product;
-import com.udonmarket.backend.user.entity.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PostDto {
 
     private Long id;
-
     private Long userId;
-    private Long userName; // 공동 구매 글 작성자
-
+    private Long categoryId;
     private Long productId;
-    private String productName;
-    private String productPrice;
-
     private String title;
     private String content;
-    private Long targetCount;
-    private Long CurrentCount;
-    private Long viewCount;
+    private Integer targetCount;
+    private Integer currentCount;
+    private Integer viewCount;
     private LocalDateTime deadline;
     private String status;
+    private String adminComment;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String categoryCode;
     private String tags;
     private Long pricePerPerson;
-    private LocalDateTime createdAt;
+
+    // 피드 카드 렌더링용 추가 필드 (DB 컬럼 아님)
+    private String authorNickname;   // 작성자 닉네임
+    private String shopName;         // 가게명 (판매자 닉네임)
+    private String location;         // 동네 이름
+    private Double lat;
+    private Double lon;
+    private String image;            // 상품 이미지 URL
+    private String myRole;           // host / participant / null
+    private Boolean myBid;           // 판매자가 입찰했는지
+    private Integer distance;        // 거리 (미터)
 }
