@@ -55,6 +55,7 @@ public class UserService {
                 .userName(req.getEmail())
                 .password(encodedPassword)
                 .name(req.getName())
+                .nickname(req.getNickname())  // ← 추가
                 .birth(req.getBirth())
                 .phone(req.getPhone())
                 .gender(gender)
@@ -89,6 +90,7 @@ public class UserService {
         return new LoginResponse(
                 user.getId(),
                 user.getUserName(),
+                user.getNickname(),   // ← 추가
                 accessToken,
                 refreshToken,
                 "로그인이 완료되었습니다."
@@ -139,10 +141,5 @@ public class UserService {
             case "2", "4" -> User.Gender.W;
             default        -> User.Gender.N;
         };
-    }
-
-    // 마이페이지에 출력할 유저 정보
-    public User myPageUserInfo(Long id) {
-        return userRepository.myPageUserInfo(id);
     }
 }

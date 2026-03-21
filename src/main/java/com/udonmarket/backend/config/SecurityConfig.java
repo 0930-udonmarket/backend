@@ -28,6 +28,7 @@ public class SecurityConfig {
 
     // context-path 가 /api 이므로 Security 경로는 /api 이후부터 매칭
     private static final String[] PUBLIC_URLS = {
+            // ── 기존 회원가입/로그인 관련 ──
             "/users/signup",
             "/users/check-email",
             "/users/sms/send",
@@ -36,15 +37,21 @@ public class SecurityConfig {
             "/users/find-id",
             "/users/find-pw/verify",
             "/users/find-pw/reset",
-            "/users/mypage/**", /* 테스트 부분 */
+            "/users/mypage/**", // 테스트용
             "/oauth/kakao",
             "/oauth/kakao/callback",
             "/oauth/naver",
             "/oauth/naver/callback",
             "/oauth/google",
             "/oauth/google/callback",
-            "/likes/**",
-            "/order/**"
+            "/likes/**", // 테스트용
+            "/order/**", // 테스트용
+
+            // ── 메인 페이지 관련 (로그인 없이도 접근 가능) ──
+            "/v1/regions/**",    // 지역 목록
+            "/v1/init-data",     // 초기 데이터
+            "/v1/feed",          // 피드 조회
+            "/v1/auth/ip-check"  // IP 체크
     };
 
     @Bean

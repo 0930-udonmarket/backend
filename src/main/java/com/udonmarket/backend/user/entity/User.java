@@ -1,6 +1,5 @@
 package com.udonmarket.backend.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,6 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_type_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private UserType userType;
 
     @Column(name = "user_name", nullable = false)
@@ -31,6 +29,9 @@ public class User {
 
     @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(length = 50)
+    private String nickname;  // ← 추가
 
     @Column(nullable = false, length = 100)
     private String birth;
@@ -43,10 +44,10 @@ public class User {
     private Gender gender;
 
     // SNS 로그인용 필드
-    @Column(name = "provider")          // "kakao" | "naver" | "google" | null(일반)
+    @Column(name = "provider")
     private String provider;
 
-    @Column(name = "provider_id")       // 각 플랫폼의 고유 사용자 ID
+    @Column(name = "provider_id")
     private String providerId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -71,11 +72,12 @@ public class User {
     // 일반 회원가입용 빌더
     @Builder
     public User(UserType userType, String userName, String password,
-                String name, String birth, String phone, Gender gender) {
+                String name, String nickname, String birth, String phone, Gender gender) {  // ← nickname 추가
         this.userType   = userType;
         this.userName   = userName;
         this.password   = password;
         this.name       = name;
+        this.nickname   = nickname;  // ← 추가
         this.birth      = birth != null ? birth : "";
         this.phone      = phone != null ? phone : "";
         this.gender     = gender;
@@ -83,18 +85,19 @@ public class User {
 
     // 비밀번호 재설정
     public void updatePassword(String encodedPassword) {
-        this.password   = encodedPassword;
-        this.updatedAt  = LocalDateTime.now();
+        this.password  = encodedPassword;
+        this.updatedAt = LocalDateTime.now();
     }
 
     // SNS 회원가입용 정적 팩토리 메서드
     public static User ofOAuth(UserType userType, String userName, String name,
-                               String provider, String providerId) {
+                               String provider, String providerId, String nickname) {  // ← nickname 추가
         User user       = new User();
         user.userType   = userType;
         user.userName   = userName;
-        user.password   = "";          // SNS 유저는 비밀번호 없음
+        user.password   = "";
         user.name       = name;
+        user.nickname   = nickname;  // ← 추가
         user.birth      = "";
         user.phone      = "";
         user.gender     = Gender.N;

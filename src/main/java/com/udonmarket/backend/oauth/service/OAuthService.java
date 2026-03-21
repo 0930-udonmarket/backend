@@ -138,7 +138,9 @@ public class OAuthService {
                     : userInfo.getProvider() + "_" + userInfo.getProviderId();
 
             user = User.ofOAuth(userType, userName, userInfo.getName(),
-                    userInfo.getProvider(), userInfo.getProviderId());
+                    userInfo.getProvider(), userInfo.getProviderId(),
+                    userInfo.getName());
+
             userRepository.save(user);
             log.info("[OAuth 신규가입] provider={}, userName={}", userInfo.getProvider(), userName);
         } else {
