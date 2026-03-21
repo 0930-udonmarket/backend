@@ -36,12 +36,15 @@ public class SecurityConfig {
             "/users/find-id",
             "/users/find-pw/verify",
             "/users/find-pw/reset",
+            "/users/mypage/**", /* 테스트 부분 */
             "/oauth/kakao",
             "/oauth/kakao/callback",
             "/oauth/naver",
             "/oauth/naver/callback",
             "/oauth/google",
-            "/oauth/google/callback"
+            "/oauth/google/callback",
+            "/likes/**",
+            "/order/**"
     };
 
     @Bean
@@ -75,5 +78,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public com.fasterxml.jackson.databind.Module hibernate6Module() {
+        return new com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module();
     }
 }
