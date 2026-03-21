@@ -1,6 +1,6 @@
 package com.udonmarket.backend.feed;
 
-import com.udonmarket.backend.post.PostDto;
+import com.udonmarket.backend.post.dto.PostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

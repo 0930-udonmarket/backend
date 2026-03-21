@@ -1,8 +1,8 @@
 package com.udonmarket.backend.feed;
 
-import com.udonmarket.backend.post.Post;
-import com.udonmarket.backend.post.PostDto;
-import com.udonmarket.backend.post.PostRepository;
+import com.udonmarket.backend.post.entity.Post;
+import com.udonmarket.backend.post.dto.PostDto;
+import com.udonmarket.backend.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.*;
