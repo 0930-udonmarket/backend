@@ -3,7 +3,6 @@ package com.udonmarket.backend.order.entity;
 import com.udonmarket.backend.post.entity.Post;
 import com.udonmarket.backend.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -142,4 +142,10 @@ public class UserService {
             default        -> User.Gender.N;
         };
     }
+
+    // 마이페이지에서 필요한 정보
+    public User myPageUserInfo(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 유저 정보를 찾을 수 없습니다. id = " + id));
+    }
 }

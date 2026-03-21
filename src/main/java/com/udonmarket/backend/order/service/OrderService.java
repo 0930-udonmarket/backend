@@ -6,6 +6,7 @@ import com.udonmarket.backend.order.repository.OrderRepository;
 import com.udonmarket.backend.post.entity.Post;
 import com.udonmarket.backend.post.repository.PostRepository;
 import com.udonmarket.backend.product.entity.Product;
+import com.udonmarket.backend.user.entity.User;
 import com.udonmarket.backend.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -31,18 +32,22 @@ public class OrderService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글(Id: " + postId + ")이 없습니다."));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저(Id: " + userId + ")이 없습니다."));
+
         // Order 정보 생성 및 저장
         Order order = new Order();
-        order.setUser(userRepository.findById(userId).get());
+        order.setUser(user);
         order.setPost(post);
 
         order.setPartStatus("ACTIVE");
         order.setQuantity(quantity);
         order.setJoinedAt(LocalDateTime.now());
+
         orderRepository.save(order); // 저장
 
         // Post의 현재 인원 수 업데이트
-        Long currentCount = (post.getCurrentCount() == null ? 0 : post.getCurrentCount()) + 1;
+        int currentCount = (post.getCurrentCount() == null ? 0 : post.getCurrentCount()) + 1;
         post.setCurrentCount(currentCount);
 
         // Post의 1인당 부담금 계산 및 업데이트
