@@ -1,12 +1,9 @@
 package com.udonmarket.backend.post.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.udonmarket.backend.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -74,6 +71,14 @@ public class Post {
     @Column(name = "price_per_person")
     private Long pricePerPerson;
 
+    // 상품 이미지 경로
+    @Column(name = "image")
+    private String image;
+
+    // 동네 이름
+    @Column(name = "location")
+    private String location;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
@@ -81,17 +86,6 @@ public class Post {
         if (this.status == null) this.status = "active";
         if (this.currentCount == null) this.currentCount = 0;
         if (this.viewCount == null) this.viewCount = 0;
-    }
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("id asc")
-    @Builder.Default
-    @JsonIgnoreProperties("post")
-    private List<PostImage> postImages = new ArrayList<>();
-
-    public void addImage(PostImage image) {
-        postImages.add(image);
-        image.setPost(this);
     }
 
     @PreUpdate

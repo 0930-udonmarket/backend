@@ -1,23 +1,15 @@
 package com.udonmarket.backend.post.service;
 
 import com.udonmarket.backend.post.dto.PostDto;
-import com.udonmarket.backend.post.repository.PostRepository;
-import com.udonmarket.backend.post.dto.PostImageDto;
 import com.udonmarket.backend.post.entity.Post;
-import com.udonmarket.backend.post.entity.PostImage;
-import com.udonmarket.backend.post.repository.PostImageRepository;
+import com.udonmarket.backend.post.repository.PostRepository;
 import com.udonmarket.backend.product.entity.Product;
 import com.udonmarket.backend.product.repository.ProductRepository;
 import com.udonmarket.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +19,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    private final PostImageRepository postImageRepository;
 
     // 전체 피드 조회
     public List<PostDto> getAllPosts() {
@@ -46,15 +37,14 @@ public class PostService {
 
     // 공구 글 작성
     @Transactional
-    public PostDto createPost(PostDto dto, PostImageDto postImageDto, String userName) {
+    public PostDto createPost(PostDto dto, String userName) {
         Long userId = userRepository.findByUserName(userName)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."))
                 .getId();
 
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 업습니다."));
+                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
 
-        // Post 객체 생성
         Post post = Post.builder()
                 .userId(userId)
                 .title(dto.getTitle())
@@ -66,38 +56,6 @@ public class PostService {
                 .pricePerPerson(dto.getPricePerPerson())
                 .product(product)
                 .build();
-
-        if (postImageDto.getFiles() != null && !postImageDto.getFiles().isEmpty()) {
-
-            // 실제 postImages들이 모여있는 내 로컬 폴더 저장소
-            String uploadFolder = "C:/udong/upload/postImages/";
-
-            File folder = new File(uploadFolder);
-            if(!folder.exists()) {
-                folder.mkdirs();
-            }
-
-            System.out.println("파일 개수: " + postImageDto.getFiles().size());
-            for (MultipartFile file : postImageDto.getFiles()) {
-                UUID uuid = UUID.randomUUID();
-                String imageFileName = uuid + "_" + file.getOriginalFilename();
-
-                File destinationFile = new File(uploadFolder + imageFileName);
-
-                try {
-                    file.transferTo(destinationFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                PostImage image = PostImage.builder()
-                        .url("/postImages/" + imageFileName)
-                        .build();
-
-                post.addImage(image);
-            }
-        }
-
         return toDto(postRepository.save(post));
     }
 

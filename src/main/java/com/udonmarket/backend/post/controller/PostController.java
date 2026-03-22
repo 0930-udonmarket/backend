@@ -2,13 +2,10 @@ package com.udonmarket.backend.post.controller;
 
 import com.udonmarket.backend.config.jwt.JwtUtil;
 import com.udonmarket.backend.post.dto.PostDto;
-import com.udonmarket.backend.post.dto.PostImageDto;
 import com.udonmarket.backend.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
@@ -35,21 +32,9 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostDto> createPost(
             @RequestHeader("Authorization") String authHeader,
-            @RequestPart("dto") PostDto dto,
-            @RequestPart(value = "files", required = false)List<MultipartFile> files) {
-
+            @RequestBody PostDto dto) {
         String userName = extractUserName(authHeader);
-
-        PostImageDto imageDto = new PostImageDto();
-        imageDto.setFiles(files);
-
-        try {
-            return ResponseEntity.ok(postService.createPost(dto, imageDto, userName));
-        } catch (Exception e) {
-            e.printStackTrace(); // 숨어있던 빨간 에러를 콘솔에 강제로 소환
-            throw e;
-        }
-
+        return ResponseEntity.ok(postService.createPost(dto, userName));
     }
 
     // DELETE /api/v1/posts/{id} - 공구 글 삭제

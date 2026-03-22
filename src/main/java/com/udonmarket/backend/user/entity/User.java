@@ -21,7 +21,7 @@ public class User {
     @JoinColumn(name = "user_type_id", nullable = false)
     private UserType userType;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(name = "login_id", nullable = false)
     private String userName;
 
     @Column(nullable = false)
