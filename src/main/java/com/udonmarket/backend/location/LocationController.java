@@ -4,6 +4,7 @@ import com.udonmarket.backend.config.jwt.JwtUtil;
 import com.udonmarket.backend.user.entity.User;
 import com.udonmarket.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,4 +49,14 @@ public class LocationController {
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다: " + userName));
         return user.getId();  // ← 실제 DB의 user.id 반환
     }
+
+    /** GET /api/v1/users/locations/{userId} */
+    @GetMapping("/locations/{userId}")
+    public ResponseEntity<List<LocationDto>> getUserLocations(@PathVariable Long userId) {
+
+        List<LocationDto> locations = locationService.findUserLocations(userId);
+
+        return ResponseEntity.ok(locations);
+    }
+
 }

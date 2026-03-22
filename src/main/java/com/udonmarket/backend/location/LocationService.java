@@ -55,4 +55,21 @@ public class LocationService {
                 .collect(Collectors.toList());
         locationRepository.saveAll(locations);
     }
+
+    public List<LocationDto> findUserLocations(Long userId) {
+        List<Location> locations = locationRepository.findByUserId(userId);
+
+        // 엔티티 리스트에서 하나씩 꺼내 DTO로 변환
+        return locations.stream()
+                .map(location -> {
+                        LocationDto dto = new LocationDto();
+                        dto.setSido(location.getSido());
+                        dto.setSigungu(location.getSigungu());
+                        dto.setLegalDong(location.getLegalDongCode());
+
+                        return dto;
+                    }
+                )
+                .toList();
+    }
 }
